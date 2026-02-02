@@ -1,11 +1,11 @@
 import { useMemo, useState } from "react";
 import "./App.css";
 
-import DataLoader from "./components/DataLoader";
-import AlertBanner from "./components/AlertBanner";
-import ForecastChart from "./components/ForecastChart";
-import StaffingTable from "./components/StaffingTable";
-import StatCard from "./components/StatCard";
+import DataLoader from "./components/dataloader";
+import AlertBanner from "./components/alertbanner";
+import ForecastChart from "./components/forecastchart";
+import StaffingTable from "./components/staffingtable";
+import StatCard from "./components/statcard";
 
 import { SAMPLE_DATA, calculateStaffing } from "./utils/demand";
 import { parseCsvFile } from "./utils/csv";
@@ -18,15 +18,13 @@ export default function App() {
 
   const understaffedHours = useMemo(() => {
     return data
-      .filter(row => calculateStaffing(row.customers) > baselineCapacity)
-      .map(row => row.hour);
+      .filter((row) => calculateStaffing(row.customers) > baselineCapacity)
+      .map((row) => row.hour);
   }, [data]);
 
   const peak = useMemo(() => {
     if (!data.length) return null;
-    return data.reduce((best, cur) =>
-      cur.customers > best.customers ? cur : best
-    );
+    return data.reduce((best, cur) => (cur.customers > best.customers ? cur : best));
   }, [data]);
 
   const avgCustomers = useMemo(() => {
@@ -57,18 +55,12 @@ export default function App() {
       <header className="topbar">
         <div>
           <h1>QueueSmart</h1>
-          <p className="subtitle">
-            Demand Forecasting & Staffing Support Tool
-          </p>
+          <p className="subtitle">Demand Forecasting & Staffing Support Tool</p>
         </div>
       </header>
 
       <section className="stats">
-        <StatCard
-          label="Peak Hour"
-          value={peak ? peak.hour : "-"}
-          sub={peak ? `${peak.customers} customers` : ""}
-        />
+        <StatCard label="Peak Hour" value={peak ? peak.hour : "-"} sub={peak ? `${peak.customers} customers` : ""} />
         <StatCard label="Avg Customers" value={avgCustomers} />
         <StatCard
           label="High Demand Hours"
@@ -78,20 +70,13 @@ export default function App() {
         <StatCard label="Baseline Staff" value={baselineCapacity} />
       </section>
 
-      <DataLoader
-        onUseSample={() => setData(SAMPLE_DATA)}
-        onCsvSelected={onCsvSelected}
-        error={error}
-      />
+      <DataLoader onUseSample={() => setData(SAMPLE_DATA)} onCsvSelected={onCsvSelected} error={error} />
 
       <AlertBanner understaffedHours={understaffedHours} />
 
       <main className="grid">
         <ForecastChart data={data} />
-        <StaffingTable
-          data={data}
-          baselineCapacity={baselineCapacity}
-        />
+        <StaffingTable data={data} baselineCapacity={baselineCapacity} />
       </main>
 
       <footer className="footer">
