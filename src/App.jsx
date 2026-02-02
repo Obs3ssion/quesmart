@@ -18,13 +18,15 @@ export default function App() {
 
   const understaffedHours = useMemo(() => {
     return data
-      .filter((row) => calculateStaffing(row.customers) > baselineCapacity)
-      .map((row) => row.hour);
+      .filter(row => calculateStaffing(row.customers) > baselineCapacity)
+      .map(row => row.hour);
   }, [data]);
 
   const peak = useMemo(() => {
     if (!data.length) return null;
-    return data.reduce((best, cur) => (cur.customers > best.customers ? cur : best));
+    return data.reduce((best, cur) =>
+      cur.customers > best.customers ? cur : best
+    );
   }, [data]);
 
   const avgCustomers = useMemo(() => {
@@ -55,7 +57,9 @@ export default function App() {
       <header className="topbar">
         <div>
           <h1>QueueSmart</h1>
-          <p className="subtitle">Demand Forecasting & Staffing Support Tool</p>
+          <p className="subtitle">
+            Demand Forecasting & Staffing Support Tool
+          </p>
         </div>
       </header>
 
@@ -74,13 +78,20 @@ export default function App() {
         <StatCard label="Baseline Staff" value={baselineCapacity} />
       </section>
 
-      <DataLoader onUseSample={() => setData(SAMPLE_DATA)} onCsvSelected={onCsvSelected} error={error} />
+      <DataLoader
+        onUseSample={() => setData(SAMPLE_DATA)}
+        onCsvSelected={onCsvSelected}
+        error={error}
+      />
 
       <AlertBanner understaffedHours={understaffedHours} />
 
       <main className="grid">
         <ForecastChart data={data} />
-        <StaffingTable data={data} baselineCapacity={baselineCapacity} />
+        <StaffingTable
+          data={data}
+          baselineCapacity={baselineCapacity}
+        />
       </main>
 
       <footer className="footer">
